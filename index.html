@@ -482,16 +482,20 @@ footer { background:#000; border-top:1px solid var(--border); padding:60px 6% 40
   <div id="toastMsg">Item added to your bag.</div>
 </div>
 
-<script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="https://sdk.monnify.com/plugin/monnify.js"></script>
 <script>
 /* ════════════════════════════════════════════════════════════
-   PAYSTACK SETUP — put your own public key here.
-   Get it from: Paystack Dashboard → Settings → API Keys & Webhooks
-   It starts with pk_test_... (testing) or pk_live_... (real money).
-   The PUBLIC key is safe to put in this file. NEVER put the
-   secret key (sk_...) anywhere in a webpage.
+   MONNIFY SETUP — the checkout widget needs both of these
+   together; neither works alone. Get them from your Monnify
+   dashboard → Developer section → API Keys & Contract.
+   Test credentials start with MK_TEST_..., live ones with
+   MK_PROD_.... Both the API key and contract code are designed
+   to be used client-side, like this — but NEVER put your secret
+   key (the one starting with a long random string, used only for
+   server-to-server calls) anywhere in this file or any webpage.
    ════════════════════════════════════════════════════════════ */
-const PAYSTACK_PUBLIC_KEY = 'pk_test_REPLACE_ME_WITH_YOUR_KEY';
+const MONNIFY_API_KEY = 'MK_TEST_H1SET512RQ';
+const MONNIFY_CONTRACT_CODE = '2952501800';
 
 const ADMIN_EMAIL = 'sznbams@gmail.com';
 
@@ -511,7 +515,7 @@ const EMAIL_LOGO_HEADER = `<div style="background:#000000;padding:28px 20px;text
    EMAILS — two Netlify pieces work together here, both using
    Resend (https://resend.com) to actually deliver mail:
 
-   • ORDER INVOICES (this file → send-email.js): when a Paystack
+   • ORDER INVOICES (this file → send-email.js): when a Monnify
      payment succeeds, this page calls send-email.js directly to
      email you an invoice and the customer a receipt.
    • CONTACT FORM ("Let's Talk"): that form is a real Netlify Form
@@ -545,11 +549,11 @@ const EMAIL_LOGO_HEADER = `<div style="background:#000000;padding:28px 20px;text
       the customer's welcome reply — turn that on under Site
       settings → Forms → Form notifications → Email notification.
 
-   Note: invoice emails only fire for the in-page Paystack popup
-   flow (Option B below). If a product uses a Paystack Payment
+   Note: invoice emails only fire for the in-page Monnify popup
+   flow (Option B below). If a product uses a Monnify Payment
    Page link (payLink) instead, the browser navigates away to
-   Paystack and this page never learns the payment succeeded —
-   turn on Paystack's own email receipts in your dashboard for
+   Monnify and this page never learns the payment succeeded —
+   turn on Monnify's own email receipts in your dashboard for
    that flow instead.
    ════════════════════════════════════════════════════════════ */
 function sendEmail(to, subject, html) {
@@ -694,7 +698,7 @@ const products = [
   {
     id:5, category:'tee', badge:null,
     name:'No Off Szn Tee', edition:'Graphic Edition',
-    price:'$18.00', ngn:'₦25,500', amountNGN:25500, payLink:'',
+    price:'$18.00', ngn:'₦500', amountNGN:500, payLink:'',
     desc:'Full-chest graphic tee with the Bam.szn manifesto printed in pink glitter . This is the statement piece — bold, loud, and impossible to ignore.',
     sizes:['S','M','L','XL'], oos:['S'], available:true,
     material:'180gsm Cotton', fit:'Regular / Relaxed',
@@ -909,7 +913,7 @@ function openProduct(id) {
         <div class="price-row" id="shippingRow-${id}"><span>Shipping</span><span id="shippingVal-${id}">Select location</span></div>
         <div class="price-row total"><span>Total</span><span id="totalVal-${id}">${p.ngn}</span></div>
       </div>
-      <button class="modal-add-btn" style="margin-top:4px;" id="payBtn-${id}" onclick="buyNow(${id})">Pay ${p.ngn} with Paystack</button>`;
+      <button class="modal-add-btn" style="margin-top:4px;" id="payBtn-${id}" onclick="buyNow(${id})">Pay ${p.ngn} with Monnify</button>`;
 
   document.getElementById('modalContent').innerHTML = `
     <div>
@@ -955,7 +959,7 @@ function updateShippingUI(id) {
 
   shippingVal.textContent = stateVal ? '₦' + fee.toLocaleString() : 'Select location';
   totalVal.textContent = '₦' + total.toLocaleString();
-  payBtn.textContent = 'Pay ₦' + total.toLocaleString() + ' with Paystack';
+  payBtn.textContent = 'Pay ₦' + total.toLocaleString() + ' with Monnify';
 }
 function buyNow(id) {
   const p = products.find(x => x.id === id);
@@ -981,48 +985,53 @@ function buyNow(id) {
   const orderRef = 'BAMS-' + Date.now();
   const order = { p, id, name, email, phone, state, addr, size: selectedSizes[id], shippingFee, totalNGN, orderRef };
 
-  // Option A: a Paystack Payment Page link for this product (no key needed)
+  // Option A: a fixed Monnify Payment Link for this product (no key needed)
   if (p.payLink) { window.location.href = p.payLink; return; }
 
-  // Option B: Paystack inline popup
-  if (typeof PaystackPop === 'undefined') {
+  // Option B: Monnify inline checkout widget
+  if (typeof MonnifySDK === 'undefined') {
     showToast('Payment could not load. Check your connection and try again.','Checkout unavailable');
     return;
   }
-  if (!PAYSTACK_PUBLIC_KEY || PAYSTACK_PUBLIC_KEY.indexOf('REPLACE_ME') !== -1) {
-    showToast('Paystack key not set yet. Add your public key in the code.','Setup needed');
+  if (!MONNIFY_API_KEY || MONNIFY_API_KEY.indexOf('REPLACE_ME') !== -1 || !MONNIFY_CONTRACT_CODE || MONNIFY_CONTRACT_CODE.indexOf('REPLACE_ME') !== -1) {
+    showToast('Monnify keys not set yet. Add your API key and contract code in the code.','Setup needed');
     return;
   }
 
-  const handler = PaystackPop.setup({
-    key: PAYSTACK_PUBLIC_KEY,
-    email: email,
-    amount: totalNGN * 100,          // Paystack charges in kobo — item price + shipping
+  MonnifySDK.initialize({
+    amount: totalNGN,                // Monnify takes the plain Naira amount — no kobo conversion needed
     currency: 'NGN',
-    ref: orderRef,
+    reference: orderRef,
+    customerFullName: name,
+    customerEmail: email,
+    apiKey: MONNIFY_API_KEY,
+    contractCode: MONNIFY_CONTRACT_CODE,
+    paymentDescription: p.name.trim() + ' — ' + selectedSizes[id],
     metadata: {
-      custom_fields: [
-        { display_name: 'Product',  variable_name: 'product',  value: p.name.trim() + ' — ' + selectedSizes[id] },
-        { display_name: 'Item Price', variable_name: 'item_price', value: p.ngn },
-        { display_name: 'Delivery State', variable_name: 'delivery_state', value: state },
-        { display_name: 'Shipping', variable_name: 'shipping', value: '₦' + shippingFee.toLocaleString() },
-        { display_name: 'Total',    variable_name: 'total',    value: '₦' + totalNGN.toLocaleString() },
-        { display_name: 'Customer', variable_name: 'customer', value: name },
-        { display_name: 'Phone',    variable_name: 'phone',    value: phone },
-        { display_name: 'Address',  variable_name: 'address',  value: addr }
-      ]
+      product: p.name.trim() + ' — ' + selectedSizes[id],
+      item_price: p.ngn,
+      delivery_state: state,
+      shipping: '₦' + shippingFee.toLocaleString(),
+      total: '₦' + totalNGN.toLocaleString(),
+      customer: name,
+      phone: phone,
+      address: addr
     },
-    callback: function (response) {
-      closeModalDirect();
-      order.reference = response.reference;
-      sendInvoiceEmails(order); // fires the admin + customer invoice emails via the Netlify Function, see setup notes above
-      showToast('Order confirmed. Reference ' + response.reference + ' — we will reach out on ' + phone + '.', 'Payment received');
+    onComplete: function (response) {
+      // Monnify calls this whether the payment succeeded or not — always check paymentStatus.
+      if (response && (response.paymentStatus === 'PAID' || response.completed === true)) {
+        closeModalDirect();
+        order.reference = response.transactionReference || response.paymentReference || orderRef;
+        sendInvoiceEmails(order); // fires the admin + customer invoice emails via the Netlify Function, see setup notes above
+        showToast('Order confirmed. Reference ' + order.reference + ' — we will reach out on ' + phone + '.', 'Payment received');
+      } else {
+        showToast('Payment did not complete (' + (response && response.paymentStatus ? response.paymentStatus : 'unknown') + '). Please try again.', 'Payment issue');
+      }
     },
     onClose: function () {
       showToast('Checkout closed. Your details are still saved.','Payment cancelled');
     }
   });
-  handler.openIframe();
 }
 function showToast(msg, title) {
   const t = document.getElementById('toast');
