@@ -6,7 +6,7 @@
 
 const { sendViaResend } = require('./utils/resend');
 
-const LOGO_URL = 'https://bamszn.xyz/bzn-logo.png';
+const LOGO_URL = 'https://i.postimg.cc/SKyNPRh4/bzn-logo-(2).png';
 const EMAIL_LOGO_HEADER = `<div style="background:#000000;padding:28px 20px;text-align:center;">
   <img src="${LOGO_URL}" alt="Bam.szn" width="150" style="display:inline-block;border:0;">
 </div>`;
