@@ -568,7 +568,8 @@ function sendInvoiceEmails(order) {
   const bodyRows = row('Order Ref', order.reference || order.orderRef) +
     row('Product', order.p.name.trim() + ' — ' + order.size) +
     row('Item Price', order.p.ngn) +
-    row('Shipping', '₦' + SHIPPING_FEE_NGN.toLocaleString()) +
+    row('Delivery State', order.state) +
+    row('Shipping', '₦' + order.shippingFee.toLocaleString()) +
     row('Total', '₦' + order.totalNGN.toLocaleString()) +
     row('Customer', order.name) +
     row('Email', order.email) +
@@ -663,7 +664,7 @@ const products = [
   {
     id:2, category:'polo', badge:'ltd',
     name:'Bamszn Nigeria-themed blue TEE', edition:'Signature Edition',
-    price:'$20.99', ngn:'₦32,000', amountNGN:32000, payLink:'',
+    price:'$20.21', ngn:'₦32,000', amountNGN:32000, payLink:'',
     desc:"Soft on the eye, tough in the game. Limited run — once it's gone, it's gone.",
     sizes:['S','M','L','XL'], oos:[], available:true,
     material:'100% Premium Cotton Piqué', fit:'Slim / Tapered',
@@ -673,7 +674,7 @@ const products = [
   {
     id:3, category:'polo', badge:'ltd',
     name:'Burgundy Bamszn Polo', edition:'ltd Edition',
-    price:'$39.21', ngn:'₦52,000', amountNGN:52000, payLink:'',
+    price:'$31.21', ngn:'₦52,000', amountNGN:52000, payLink:'',
     desc:'Clean burgundy base, a combination built for the big moments. The Gold Edition is the centrepiece of The 23 Drop. Wear it like a trophy.',
     sizes:['XS','S','M','L','XL','XXL'], oos:['XXL'], available:true,
     material:'100% Premium Cotton Piqué', fit:'Regular / Classic',
@@ -683,7 +684,7 @@ const products = [
   {
     id:4, category:'polo', badge:'ltd',
     name:'Pink bam.szn Polo', edition:'New Edition',
-    price:'$39.21', ngn:'₦52,000', amountNGN:52000, payLink:'',
+    price:'$31.21', ngn:'₦52,000', amountNGN:52000, payLink:'',
     desc:'The everyday essential. Heavyweight drop-shoulder cut in pink. Wear it alone, layer it — this one works every time.',
     sizes:['S','M','L','XL','XXL'], oos:[], available:true,
     material:'320gsm Heavyweight Cotton', fit:'Oversized / Drop Shoulder',
@@ -693,7 +694,7 @@ const products = [
   {
     id:5, category:'tee', badge:null,
     name:'No Off Szn Tee', edition:'Graphic Edition',
-    price:'$18', ngn:'₦25,500', amountNGN:25500, payLink:'',
+    price:'$18.00', ngn:'₦25,500', amountNGN:25500, payLink:'',
     desc:'Full-chest graphic tee with the Bam.szn manifesto printed in pink glitter . This is the statement piece — bold, loud, and impossible to ignore.',
     sizes:['S','M','L','XL'], oos:['S'], available:true,
     material:'180gsm Cotton', fit:'Regular / Relaxed',
@@ -713,7 +714,49 @@ const products = [
 ];
 
 // Flat shipping fee added at checkout (Naira) — only applied once a delivery address is entered
-const SHIPPING_FEE_NGN = 6500;
+// Shipping fee per Nigerian state (delivery destination) — replaces the old flat fee
+const SHIPPING_RATES = [
+  { state: 'Abuja (FCT)', fee: 4000 },
+  { state: 'Adamawa — Yola', fee: 5000 },
+  { state: 'Akwa Ibom — Uyo', fee: 7000 },
+  { state: 'Anambra — Awka', fee: 6000 },
+  { state: 'Bauchi — Bauchi', fee: 4000 },
+  { state: 'Bayelsa — Yenagoa', fee: 7000 },
+  { state: 'Benue — Makurdi', fee: 5000 },
+  { state: 'Borno — Maiduguri', fee: 5000 },
+  { state: 'Cross River — Calabar', fee: 7000 },
+  { state: 'Delta — Asaba', fee: 6000 },
+  { state: 'Ebonyi — Abakaliki', fee: 6000 },
+  { state: 'Edo — Benin City', fee: 6000 },
+  { state: 'Ekiti — Ado-Ekiti', fee: 6000 },
+  { state: 'Enugu — Enugu', fee: 6000 },
+  { state: 'Gombe — Gombe', fee: 5000 },
+  { state: 'Imo — Owerri', fee: 6000 },
+  { state: 'Jigawa — Dutse', fee: 4000 },
+  { state: 'Kaduna — Kaduna', fee: 5000 },
+  { state: 'Kano — Kano', fee: 5000 },
+  { state: 'Katsina — Katsina', fee: 4000 },
+  { state: 'Kebbi — Birnin Kebbi', fee: 5000 },
+  { state: 'Kogi — Lokoja', fee: 6000 },
+  { state: 'Kwara — Ilorin', fee: 5000 },
+  { state: 'Lagos — Ikeja', fee: 6500 },
+  { state: 'Nasarawa — Lafia', fee: 5000 },
+  { state: 'Niger — Minna', fee: 4000 },
+  { state: 'Ogun — Abeokuta', fee: 6000 },
+  { state: 'Ondo — Akure', fee: 6000 },
+  { state: 'Osun — Osogbo', fee: 6000 },
+  { state: 'Oyo — Ibadan', fee: 6000 },
+  { state: 'Plateau — Jos', fee: 4000 },
+  { state: 'Rivers — Port Harcourt', fee: 7000 },
+  { state: 'Sokoto — Sokoto', fee: 5000 },
+  { state: 'Taraba — Jalingo', fee: 5000 },
+  { state: 'Yobe — Damaturu', fee: 5000 },
+  { state: 'Zamfara — Gusau', fee: 4000 }
+];
+function shippingFeeFor(stateName) {
+  const match = SHIPPING_RATES.find(r => r.state === stateName);
+  return match ? match.fee : 0;
+}
 
 let selectedSizes = {};
 let currentFilter = 'all';
@@ -856,10 +899,14 @@ function openProduct(id) {
       <input class="checkout-input" id="buyerName" placeholder="Full name">
       <input class="checkout-input" id="buyerEmail" type="email" inputmode="email" placeholder="Email address">
       <input class="checkout-input" id="buyerPhone" type="tel" inputmode="tel" placeholder="Phone number">
-      <input class="checkout-input" id="buyerAddr" placeholder="Delivery address" oninput="updateShippingUI(${id})">
+      <select class="checkout-input" id="buyerState" onchange="updateShippingUI(${id})">
+        <option value="">Select delivery location (state)</option>
+        ${SHIPPING_RATES.map(r => `<option value="${r.state}">${r.state} — ₦${r.fee.toLocaleString()}</option>`).join('')}
+      </select>
+      <input class="checkout-input" id="buyerAddr" placeholder="Delivery address">
       <div class="price-breakdown">
         <div class="price-row"><span>Item price</span><span>${p.ngn}</span></div>
-        <div class="price-row" id="shippingRow-${id}"><span>Shipping</span><span id="shippingVal-${id}">Enter address</span></div>
+        <div class="price-row" id="shippingRow-${id}"><span>Shipping</span><span id="shippingVal-${id}">Select location</span></div>
         <div class="price-row total"><span>Total</span><span id="totalVal-${id}">${p.ngn}</span></div>
       </div>
       <button class="modal-add-btn" style="margin-top:4px;" id="payBtn-${id}" onclick="buyNow(${id})">Pay ${p.ngn} with Paystack</button>`;
@@ -897,16 +944,16 @@ function selectSize(id, size, btn) {
 function updateShippingUI(id) {
   const p = products.find(x => x.id === id);
   if (!p) return;
-  const addr = (document.getElementById('buyerAddr') || {}).value?.trim() || '';
+  const stateVal = (document.getElementById('buyerState') || {}).value || '';
   const shippingVal = document.getElementById(`shippingVal-${id}`);
   const totalVal = document.getElementById(`totalVal-${id}`);
   const payBtn = document.getElementById(`payBtn-${id}`);
   if (!shippingVal || !totalVal || !payBtn) return;
 
-  const hasAddr = addr.length > 0;
-  const total = p.amountNGN + (hasAddr ? SHIPPING_FEE_NGN : 0);
+  const fee = stateVal ? shippingFeeFor(stateVal) : 0;
+  const total = p.amountNGN + fee;
 
-  shippingVal.textContent = hasAddr ? '₦' + SHIPPING_FEE_NGN.toLocaleString() : 'Enter address';
+  shippingVal.textContent = stateVal ? '₦' + fee.toLocaleString() : 'Select location';
   totalVal.textContent = '₦' + total.toLocaleString();
   payBtn.textContent = 'Pay ₦' + total.toLocaleString() + ' with Paystack';
 }
@@ -920,16 +967,19 @@ function buyNow(id) {
   const name  = (document.getElementById('buyerName')  || {}).value?.trim() || '';
   const email = (document.getElementById('buyerEmail') || {}).value?.trim() || '';
   const phone = (document.getElementById('buyerPhone') || {}).value?.trim() || '';
+  const state = (document.getElementById('buyerState') || {}).value || '';
   const addr  = (document.getElementById('buyerAddr')  || {}).value?.trim() || '';
 
   if (!name)  { showToast('Enter your full name.','Missing details'); return; }
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { showToast('Enter a valid email so we can send your receipt.','Missing details'); return; }
   if (!phone) { showToast('Enter a phone number for delivery.','Missing details'); return; }
+  if (!state) { showToast('Select your delivery location to calculate shipping.','Missing details'); return; }
   if (!addr)  { showToast('Enter your delivery address.','Missing details'); return; }
 
-  const totalNGN = p.amountNGN + SHIPPING_FEE_NGN;
+  const shippingFee = shippingFeeFor(state);
+  const totalNGN = p.amountNGN + shippingFee;
   const orderRef = 'BAMS-' + Date.now();
-  const order = { p, id, name, email, phone, addr, size: selectedSizes[id], totalNGN, orderRef };
+  const order = { p, id, name, email, phone, state, addr, size: selectedSizes[id], shippingFee, totalNGN, orderRef };
 
   // Option A: a Paystack Payment Page link for this product (no key needed)
   if (p.payLink) { window.location.href = p.payLink; return; }
@@ -954,7 +1004,8 @@ function buyNow(id) {
       custom_fields: [
         { display_name: 'Product',  variable_name: 'product',  value: p.name.trim() + ' — ' + selectedSizes[id] },
         { display_name: 'Item Price', variable_name: 'item_price', value: p.ngn },
-        { display_name: 'Shipping', variable_name: 'shipping', value: '₦' + SHIPPING_FEE_NGN.toLocaleString() },
+        { display_name: 'Delivery State', variable_name: 'delivery_state', value: state },
+        { display_name: 'Shipping', variable_name: 'shipping', value: '₦' + shippingFee.toLocaleString() },
         { display_name: 'Total',    variable_name: 'total',    value: '₦' + totalNGN.toLocaleString() },
         { display_name: 'Customer', variable_name: 'customer', value: name },
         { display_name: 'Phone',    variable_name: 'phone',    value: phone },
