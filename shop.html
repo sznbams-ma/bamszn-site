@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop | Bam.szn — No Off Szn</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body class="shop-page">
+
+<div class="shop-intro" id="shopIntro" aria-hidden="true">
+  <div class="warp-bar" style="--i:0"></div><div class="warp-bar" style="--i:1"></div><div class="warp-bar" style="--i:2"></div>
+  <div class="warp-bar" style="--i:3"></div><div class="warp-bar" style="--i:4"></div><div class="warp-bar" style="--i:5"></div>
+  <div class="warp-bar" style="--i:6"></div>
+  <div class="intro-word">BAM.SZN</div>
+</div>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<header>
+  <a href="/" class="logo">Bam.szn<span>No Off Szn</span></a>
+  <nav>
+    <a href="/#about">About</a>
+    <a href="/shop">Shop</a>
+    <a href="/#brand">Brand</a>
+    <a href="/#policies">Shipping & Returns</a>
+    <a href="/#contact">Contact</a>
+  </nav>
+</header>
+
+<section class="shop-hero">
+  <div class="section-label">The Full Collection</div>
+  <h1><span class="line"><span>Every Piece.</span></span><span class="line"><span><em>No Off Szn.</em></span></span></h1>
+  <div class="shop-hero-sub">
+    <div class="shop-count" id="shopCount"></div>
+    <a href="/" class="btn-ghost">← Back Home</a>
+  </div>
+</section>
+
+<section id="shop" class="section shop-section">
+  <div class="shop-header">
+    <div>
+      <div class="section-label">The LTD Polo Drop</div>
+      <h2 class="section-title">All<br>Products.</h2>
+    </div>
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="filterProducts('all',this)">All</button>
+      <button class="filter-tab" onclick="filterProducts('polo',this)">Polos</button>
+      <button class="filter-tab" onclick="filterProducts('tee',this)">Tees</button>
+      <button class="filter-tab" onclick="filterProducts('set',this)">Sets</button>
+    </div>
+  </div>
+  <div class="products-grid" id="productsGrid"></div>
+</section>
+
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    <span>NO OFF SZN</span><span class="dot">◆</span>
+    <span>STAY FLY</span><span class="dot">◆</span>
+    <span>STAY ACTIVE</span><span class="dot">◆</span>
+    <span>MADE IN NAIJA</span><span class="dot">◆</span>
+    <span>BAM.SZN</span><span class="dot">◆</span>
+    <span>NO OFF SZN</span><span class="dot">◆</span>
+    <span>STAY FLY</span><span class="dot">◆</span>
+    <span>STAY ACTIVE</span><span class="dot">◆</span>
+    <span>MADE IN NAIJA</span><span class="dot">◆</span>
+    <span>Wear bam.szn</span><span class="dot">◆</span>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo-big">Bam.szn</div>
+      <p> No off season. Premium streetwear for people who are always on.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Shop</div>
+      <a href="/shop">All Products</a><a href="#" onclick="openBag();return false;">Your Bag</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Info</div>
+      <a href="/#about">About</a><a href="/#policies">Shipping & Returns</a><a href="/#contact">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 <strong>Bam.szn</strong>. STAY FLY STAY ACTIVE.</div>
+    <div class="footer-tagline">No Off Szn.</div>
+  </div>
+</footer>
+
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-img-panel" id="modalImgPanel">
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+      <div class="modal-placeholder-big" id="modalPlaceholder">
+        <div class="ph-icon">👕</div>
+        <div class="ph-name" id="modalPlaceholderName">BAM.SZN</div>
+      </div>
+    </div>
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-title" id="toastTitle">Added!</div>
+  <div id="toastMsg">Item added to your bag.</div>
+</div>
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="/assets/site.js"></script>
+<script>
+document.getElementById('shopCount').innerHTML = `<strong>${products.length}</strong> pieces in the drop`;
+</script>
+</body>
+</html>
