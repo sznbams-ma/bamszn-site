@@ -217,7 +217,7 @@ const products = [
     name:'No Off Szn Tee', edition:'Graphic Edition',
     price:'$18.00', ngn:'₦28000', amountNGN:28000, payLink:'',
     desc:'Full-chest graphic tee with the Bam.szn manifesto printed in pink glitter . This is the statement piece — bold, loud, and impossible to ignore.',
-    sizes:['S','M','L','XL'], oos:['S'], available:true,
+    sizes:['S','M','L','XL'], oos:['S'], available:false,
     material:'180gsm Cotton', fit:'Regular / Relaxed',
     imgSrc:'https://i.postimg.cc/yxDkyr2Q/bamszn-glitter-tee.png',
     imgSrc2:'', swatch:'#777'
