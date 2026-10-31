@@ -89,6 +89,7 @@ function sendInvoiceEmails(order) {
     row('Subtotal', '₦' + order.subtotal.toLocaleString()) +
     row('Delivery State', escHtml(order.state)) +
     row('Shipping', '₦' + order.shippingFee.toLocaleString()) +
+    row('VAT (1.5%)', '₦' + order.vatFee.toLocaleString()) +
     row('Total', '₦' + order.totalNGN.toLocaleString()) +
     row('Customer', escHtml(order.name)) +
     row('Email', escHtml(order.email)) +
@@ -277,6 +278,9 @@ function shippingFeeFor(stateName) {
   const match = SHIPPING_RATES.find(r => r.state === stateName);
   return match ? match.fee : 0;
 }
+
+// Flat VAT fee (Naira) added to every order at checkout
+const VAT_FEE = 550;
 
 let selectedSizes = {};
 let selectedQty = {};
@@ -699,6 +703,7 @@ function renderBag(stagger) {
       <div class="price-breakdown">
         <div class="price-row"><span>Subtotal (${bagCount()} item${bagCount()===1?'':'s'})</span><span id="bagSubtotal"></span></div>
         <div class="price-row"><span>Shipping</span><span id="bagShipping">Select location</span></div>
+        <div class="price-row"><span>VAT (1.5%)</span><span id="bagVat">₦${VAT_FEE.toLocaleString()}</span></div>
         <div class="price-row total"><span>Total</span><span id="bagTotal"></span></div>
       </div>
       <button class="modal-add-btn" id="bagPayBtn" onclick="checkoutBag()">Pay with Paystack</button>
@@ -716,8 +721,8 @@ function updateBagTotals() {
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
   set('bagSubtotal', '₦' + sub.toLocaleString());
   set('bagShipping', stateVal ? '₦' + fee.toLocaleString() : 'Select location');
-  set('bagTotal', '₦' + (sub + fee).toLocaleString());
-  set('bagPayBtn', 'Pay ₦' + (sub + fee).toLocaleString() + ' with Paystack');
+  set('bagTotal', '₦' + (sub + fee + VAT_FEE).toLocaleString());
+  set('bagPayBtn', 'Pay ₦' + (sub + fee + VAT_FEE).toLocaleString() + ' with Paystack');
   const total = document.getElementById('bagTotal');
   if (total) popEl(total);
 }
@@ -760,9 +765,10 @@ function checkoutBag() {
   const items = bag.map(it => ({ p: products.find(x => x.id === it.id), size: it.size, qty: it.qty }));
   const subtotal = bagSubtotal();
   const shippingFee = shippingFeeFor(state);
-  const totalNGN = subtotal + shippingFee;
+  const vatFee = VAT_FEE;
+  const totalNGN = subtotal + shippingFee + vatFee;
   const orderRef = 'BAMS-' + Date.now();
-  const order = { items, name, email, phone, state, addr, subtotal, shippingFee, totalNGN, orderRef };
+  const order = { items, name, email, phone, state, addr, subtotal, shippingFee, vatFee, totalNGN, orderRef };
   const itemsSummary = items.map(it => `${it.qty} × ${it.p.name.trim()} — ${it.size}`).join(', ');
 
   if (typeof PaystackPop === 'undefined') {
@@ -777,7 +783,7 @@ function checkoutBag() {
   const handler = PaystackPop.setup({
     key: PAYSTACK_PUBLIC_KEY,
     email: email,
-    amount: totalNGN * 100,          // Paystack charges in kobo — bag subtotal + shipping
+    amount: totalNGN * 100,          // Paystack charges in kobo — bag subtotal + shipping + VAT
     currency: 'NGN',
     ref: orderRef,
     metadata: {
@@ -786,6 +792,7 @@ function checkoutBag() {
         { display_name: 'Subtotal', variable_name: 'subtotal', value: '₦' + subtotal.toLocaleString() },
         { display_name: 'Delivery State', variable_name: 'delivery_state', value: state },
         { display_name: 'Shipping', variable_name: 'shipping', value: '₦' + shippingFee.toLocaleString() },
+        { display_name: 'VAT (1.5%)', variable_name: 'vat', value: '₦' + vatFee.toLocaleString() },
         { display_name: 'Total',    variable_name: 'total',    value: '₦' + totalNGN.toLocaleString() },
         { display_name: 'Customer', variable_name: 'customer', value: name },
         { display_name: 'Phone',    variable_name: 'phone',    value: phone },
