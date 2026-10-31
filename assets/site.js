@@ -177,7 +177,7 @@ const products = [
     price:'$36.15', ngn:'₦48,000', amountNGN:48000, payLink:'',
     desc:'The one that started it all. The green OG Polo is cut from heavyweight piqué cotton with our signature embroidered "bamszn" badge on the collar when raised. Clean, structured, and built to last beyond one season.',
     sizes:['XS','S','M','L','XL','XXL'], oos:['XS'], available:false,
-    material:'100% Premium Cotton Piqué', fit:'Regular / Relaxed',
+    material:'100% Premium Cotton Piqué', fit:'Regular / Fit',
     imgSrc:'https://i.postimg.cc/FsKmD4rD/IMG-1831.png',
     imgSrc2:'', swatch:'#111'
   },
@@ -197,7 +197,7 @@ const products = [
     price:'$36.15', ngn:'₦48,000', amountNGN:48000, payLink:'',
     desc:'Clean burgundy base, a combination built for the big moments. The Gold Edition is the centrepiece of The 001 Drop. Wear it like a trophy.',
     sizes:['XS','S','M','L','XL','XXL'], oos:['XXL'], available:false,
-    material:'100% Premium Cotton Piqué', fit:'Regular / Classic',
+    material:'100% Premium Cotton Piqué', fit:'Regular / Fit',
     imgSrc:'https://i.postimg.cc/26p8KXck/IMG-1832.png',
     imgSrc2:'', swatch:'#f0ede8'
   },
@@ -205,9 +205,9 @@ const products = [
     id:4, category:'polo', badge:'ltd',
     name:'Pink bam.szn Polo', edition:'New Edition',
     price:'$36.15', ngn:'₦48,000', amountNGN:48000, payLink:'',
-    desc:'The everyday essential. Heavyweight drop-shoulder cut in pink. Wear it alone, layer it — this one works every time.',
+    desc:'The everyday essential. cut in pink. Wear it alone, layer it — this one works every time.',
     sizes:['S','M','L','XL','XXL'], oos:[], available:false,
-    material:'320gsm Heavyweight Cotton', fit:'Oversized / Drop Shoulder',
+    material:'250gsm Heavyweight Cotton', fit:'Regular / Fit',
     imgSrc:'https://i.postimg.cc/W1C2dHPk/IMG-1833.png',
     imgSrc2:'', swatch:'#111'
   },
@@ -216,7 +216,7 @@ const products = [
     name:'No Off Szn Tee', edition:'Graphic Edition',
     price:'$18.00', ngn:'₦28000', amountNGN:28000, payLink:'',
     desc:'Full-chest graphic tee with the Bam.szn manifesto printed in pink glitter . This is the statement piece — bold, loud, and impossible to ignore.',
-    sizes:['S','M','L','XL'], oos:['S'], available:false,
+    sizes:['S','M','L','XL'], oos:['S'], available:true,
     material:'180gsm Cotton', fit:'Regular / Relaxed',
     imgSrc:'https://i.postimg.cc/yxDkyr2Q/bamszn-glitter-tee.png',
     imgSrc2:'', swatch:'#777'
@@ -236,7 +236,7 @@ const products = [
 // Flat shipping fee added at checkout (Naira) — only applied once a delivery address is entered
 // Shipping fee per Nigerian state (delivery destination) — replaces the old flat fee
 const SHIPPING_RATES = [
-  { state: 'Abuja (FCT)', fee: 3500 },
+  { state: 'Abuja (FCT)', fee: 5000 },
   { state: 'Adamawa — Yola', fee: 5000 },
   { state: 'Akwa Ibom — Uyo', fee: 6000 },
   { state: 'Anambra — Awka', fee: 6000 },
@@ -253,13 +253,13 @@ const SHIPPING_RATES = [
   { state: 'Gombe — Gombe', fee: 5000 },
   { state: 'Imo — Owerri', fee: 6000 },
   { state: 'Jigawa — Dutse', fee: 4000 },
-  { state: 'Kaduna — Kaduna', fee: 4000 },
+  { state: 'Kaduna — Kaduna', fee: 5500 },
   { state: 'Kano — Kano', fee: 5000 },
   { state: 'Katsina — Katsina', fee: 4000 },
   { state: 'Kebbi — Birnin Kebbi', fee: 5000 },
   { state: 'Kogi — Lokoja', fee: 6000 },
   { state: 'Kwara — Ilorin', fee: 5000 },
-  { state: 'Lagos — Ikeja', fee: 5500 },
+  { state: 'Lagos — Ikeja', fee: 6000 },
   { state: 'Nasarawa — Lafia', fee: 5000 },
   { state: 'Niger — Minna', fee: 4000 },
   { state: 'Ogun — Abeokuta', fee: 6000 },
