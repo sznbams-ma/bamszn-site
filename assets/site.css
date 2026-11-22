@@ -241,6 +241,11 @@ footer { background:#000; border-top:1px solid var(--border); padding:60px 6% 40
 .footer-copy { font-size:12px; color:var(--muted); }
 .footer-copy strong { color:var(--red); }
 .footer-tagline { font-family:var(--cormorant); font-style:italic; font-size:16px; color:rgba(192,0,0,0.5); }
+.footer-payments { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+.footer-secured { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:10px; }
+.footer-secured img { height:16px; width:auto; }
+.pay-badges { display:flex; gap:8px; flex-wrap:wrap; }
+.pay-badges img { height:30px; width:50px; object-fit:contain; background:#fff; border-radius:5px; padding:5px 6px; box-sizing:border-box; }
 
 /* TOAST */
 .toast { position:fixed; bottom:30px; right:30px; background:var(--surface); border:1px solid rgba(192,0,0,0.3); border-radius:4px; padding:16px 24px; font-size:13px; color:var(--text); z-index:1000; transform:translateY(80px); opacity:0; transition:all 0.3s ease; max-width:280px; }
