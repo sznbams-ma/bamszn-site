@@ -184,20 +184,20 @@ const products = [
   },
   {
     id:2, category:'polo', badge:'ltd',
-    name:'Bamszn Nigeria-themed blue TEE', edition:'Signature Edition',
-    price:'$20.21', ngn:'₦32,000', amountNGN:32000, payLink:'',
+    name:'bamszn midnight crush ', edition:'Signature Edition',
+    price:'$18.08', ngn:'₦25,000', amountNGN:25000, payLink:'',
     desc:"Soft on the eye, tough in the game. Limited run — once it's gone, it's gone.",
     sizes:['S','M','L','XL'], oos:[], available:false,
-    material:'100% Premium Cotton Piqué', fit:'Slim / Tapered',
-    imgSrc:'https://i.postimg.cc/CL692rXK/Nigeria-themed-blue-TEE.png',
-    imgSrc2:'', swatch:'#d4a0a0'
+    material:'100% Premium Cotton, Midnight blue', fit:'Slim / Bodycon',
+    imgSrc:'https://i.postimg.cc/Z5NFz5cz/copy-67E974A1-0A34-4329-BB50-80B29AF48DD3.png',
+    imgSrc2:'https://i.postimg.cc/JnrbXcWs/copy-1F5E2FCB-EFA1-490B-8FF6-1D4EFCBABCEA.png', swatch:'#d4a0a0'
   },
   {
     id:3, category:'polo', badge:'ltd',
     name:'Burgundy Bamszn Polo', edition:'ltd Edition',
     price:'$36.15', ngn:'₦48,000', amountNGN:48000, payLink:'',
     desc:'Clean burgundy base, a combination built for the big moments. The Gold Edition is the centrepiece of The 001 Drop. Wear it like a trophy.',
-    sizes:['XS','S','M','L','XL','XXL'], oos:['XXL'], available:false,
+    sizes:['S','M','L','XL','XXL'], oos:['XXL'], available:false,
     material:'100% Premium Cotton Piqué', fit:'Regular / Fit',
     imgSrc:'https://i.postimg.cc/26p8KXck/IMG-1832.png',
     imgSrc2:'', swatch:'#f0ede8'
@@ -224,9 +224,19 @@ const products = [
   },
   {
     id:6, category:'set', badge:'SOON',
-    name:'Bamszn Red waffle Tee', edition:'Matching Set — Red',
-    price:'$80', ngn:'₦128,000', amountNGN:128000, payLink:'',
-    desc:'The full Bams experience. Red polo and straight-leg shorts in matching cotton. An entire vibe — co-ord ready.',
+    name:'Bamszn After hours ', edition:'Matching Set — Red',
+    price:'$28.92', ngn:'₦40,000', amountNGN:40000, payLink:'',
+    desc:'The full Bams experience. Cute, confident and made to move. A little sweet, a little bold, always in your own szn. An entire vibe — co-ord ready.',
+    sizes:['S','M','L','XL'], oos:[], available:false,
+    material:'100% waffle cotton — Co-ord Set', fit:'Matching / Relaxed',
+    imgSrc:'https://i.postimg.cc/7YsbWDxv/freepik-bamsszn-project-20260918151747g4TM-removebg-preview.png',
+    imgSrc2:'', swatch:'#C00000'
+  },
+   {
+    id:7, category:'set', badge:'SOON',
+    name:'Miss bamszn', edition:'Matching Set — Red',
+    price:'$28.92', ngn:'₦40,000', amountNGN:40000, payLink:'',
+    desc:'The full Bams experience. Cute, confident and made to move. A little sweet, a little bold, always in your own szn. An entire vibe — co-ord ready.',
     sizes:['S','M','L','XL'], oos:[], available:false,
     material:'100% waffle cotton — Co-ord Set', fit:'Matching / Relaxed',
     imgSrc:'https://i.postimg.cc/7YsbWDxv/freepik-bamsszn-project-20260918151747g4TM-removebg-preview.png',
