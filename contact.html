@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact | Bam.szn — No Off Szn</title>
+<meta name="description" content="Get in touch with Bam.szn — wholesale inquiries, collabs, custom orders and general questions.">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body class="sub-page">
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<header>
+  <a href="/" class="logo">Bam.szn<span>No Off Szn</span></a>
+  <nav>
+    <a href="/about">About</a>
+    <a href="/shop" data-shop-link>Shop</a>
+    <a href="/shipping-returns">Shipping & Returns</a>
+    <a href="/contact">Contact</a>
+    <a href="/shop" class="nav-cta" data-shop-link>Shop Now</a>
+  </nav>
+</header>
+
+<section class="shop-hero page-hero" data-word="TALK">
+  <div class="section-label">Get In Touch</div>
+  <h1><span class="line"><span>Let's</span></span><span class="line"><span><em>Talk.</em></span></span></h1>
+  <div class="shop-hero-sub">
+    <p class="section-desc">Wholesale inquiries, collabs — slide in. We respond.</p>
+  </div>
+</section>
+
+<section id="contact" class="section page-first" style="background:var(--bg);">
+  <div class="contact-section fade-up">
+    <div class="contact-info">
+      <div class="section-label">Get In Touch</div>
+      <h2 class="section-title">Let's<br>Talk.</h2>
+      <p class="section-desc">Wholesale inquiries, collabs — slide in. We respond.</p>
+      <div class="contact-detail">
+        <div class="contact-item"><div class="contact-item-label">Instagram</div><div class="contact-item-value">@bam.szn</div></div>
+        <div class="contact-item"><div class="contact-item-label">Email</div><div class="contact-item-value">sznbams@gmail.com</div></div>
+        <div class="contact-item"><div class="contact-item-label">Based In</div><div class="contact-item-value">NAIJA 🇳🇬</div></div>
+      </div>
+      <div class="social-row">
+        <a href="https://www.instagram.com/noofszn?stkn=MXJ6dm44dGR1eDhr&utm_source=qr" target="_blank" class="social-link">Instagram</a>
+      </div>
+    </div>
+    <form class="contact-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" onsubmit="return submitContactForm(event)">
+      <input type="hidden" name="form-name" value="contact">
+      <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
+      <div class="form-group"><label>Your Name</label><input type="text" name="name" id="contactName" placeholder="Your name"></div>
+      <div class="form-group"><label>Email</label><input type="email" name="email" id="contactEmail" placeholder="youremail@example.com"></div>
+      <div class="form-group"><label>Subject</label>
+        <select name="subject" id="contactSubject">
+          <option>General Inquiry</option>
+          <option>Wholesale / Bulk Order</option>
+          <option>Collab / Partnership</option>
+          <option>Custom Order</option>
+      
+        </select>
+      </div>
+      <div class="form-group"><label>Message</label><textarea name="message" id="contactMessage" placeholder="Tell us what's on your mind..."></textarea></div>
+      <button type="submit" class="btn-primary" style="border:none;width:100%;font-family:var(--body);">Send Message</button>
+    </form>
+  </div>
+</section>
+
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    <span>NO OFF SZN</span><span class="dot">◆</span>
+    <span>STAY FLY</span><span class="dot">◆</span>
+    <span>STAY ACTIVE</span><span class="dot">◆</span>
+    <span>MADE IN NAIJA</span><span class="dot">◆</span>
+    <span>BAM.SZN</span><span class="dot">◆</span>
+    <span>NO OFF SZN</span><span class="dot">◆</span>
+    <span>STAY FLY</span><span class="dot">◆</span>
+    <span>STAY ACTIVE</span><span class="dot">◆</span>
+    <span>MADE IN NAIJA</span><span class="dot">◆</span>
+    <span>Wear bam.szn</span><span class="dot">◆</span>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo-big">Bam.szn</div>
+      <p> No off season. Premium streetwear for people who are always on.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Shop</div>
+      <a href="/shop" data-shop-link>001 Polo Drop</a><a href="/shop" data-shop-link>Polos</a><a href="/shop" data-shop-link>Tees</a><a href="/shop" data-shop-link>Sets</a><a href="#" onclick="openBag();return false;">Your Bag</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Info</div>
+      <a href="/">Home</a><a href="/about">About</a><a href="/shipping-returns">Shipping & Returns</a><a href="/contact">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 <strong>Bam.szn</strong>. STAY FLY STAY ACTIVE.</div>
+    <div class="footer-tagline">No Off Szn.</div>
+  </div>
+</footer>
+
+<div class="toast" id="toast">
+  <div class="toast-title" id="toastTitle">Added!</div>
+  <div id="toastMsg">Item added to your bag.</div>
+</div>
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="/assets/site.js"></script>
+</body>
+</html>

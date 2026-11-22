@@ -457,7 +457,7 @@ function openProduct(id) {
 }
 
 function closeModal(e) { if (e.target===document.getElementById('modalBackdrop')) closeModalDirect(); }
-function closeModalDirect() { document.getElementById('modalBackdrop').classList.remove('open'); if (!bagIsOpen()) document.body.style.overflow=''; }
+function closeModalDirect() { const m = document.getElementById('modalBackdrop'); if (!m) return; m.classList.remove('open'); if (!bagIsOpen()) document.body.style.overflow=''; }
 function selectSize(id, size, btn) {
   selectedSizes[id] = size;
   document.querySelectorAll(`#sizeGrid-${id} .size-btn`).forEach(b => b.classList.remove('selected'));
@@ -644,7 +644,7 @@ function openBag() {
 function closeBag() {
   if (!bagIsOpen()) return;
   document.body.classList.remove('bag-open');
-  if (!document.getElementById('modalBackdrop').classList.contains('open')) document.body.style.overflow = '';
+  const mb = document.getElementById('modalBackdrop'); if (!mb || !mb.classList.contains('open')) document.body.style.overflow = '';
 }
 
 function renderBag(stagger) {
@@ -903,6 +903,85 @@ if ('IntersectionObserver' in window) {
   revealAll();
 }
 
-document.addEventListener('keydown', e => { if (e.key==='Escape') { closeModalDirect(); closeBag(); } });
+/* ════════════════════════════════════════════════════════════
+   SITE MENU — full-screen menu with every page, opened from the
+   "Menu" button in the header (always visible, including mobile).
+   ════════════════════════════════════════════════════════════ */
+const MENU_LINKS = [
+  { href: '/',                 label: 'Home',              note: 'Start here' },
+  { href: '/shop',             label: 'Shop with Bamszn',  note: 'The 001 Polo Drop', shop: true },
+  { href: '/about',            label: 'About',             note: 'Who we are · Philosophy · What we stand for',
+    subs: [['/about#who','Who We Are'],['/about#philosophy','Our Philosophy'],['/about#values','What We Stand For']] },
+  { href: '/shipping-returns', label: 'Shipping & Returns', note: 'Delivery & refunds' },
+  { href: '/contact',          label: 'Get In Touch',      note: 'Wholesale · Collabs · Custom' },
+];
+
+function currentPath() {
+  const p = window.location.pathname.replace(/\.html$/, '').replace(/\/index$/, '/').replace(/(.)\/$/, '$1');
+  return p || '/';
+}
+
+function mountMenu() {
+  const header = document.querySelector('header');
+  if (!header || document.getElementById('menuBtn')) return;
+  header.insertAdjacentHTML('beforeend',
+    `<button class="menu-btn" id="menuBtn" onclick="toggleMenu()" aria-label="Open menu" aria-expanded="false" aria-controls="siteMenu"><span class="menu-btn-label">Menu</span><span class="menu-btn-lines"><i></i><i></i></span></button>`);
+  const here = currentPath();
+  const items = MENU_LINKS.map((l, i) => `
+    <li class="menu-item${here === l.href ? ' current' : ''}" style="--i:${i}">
+      <a href="${l.href}" class="menu-link"${l.shop ? ' data-shop-link' : ''}${here === l.href ? ' aria-current="page"' : ''} onclick="closeMenu()">
+        <span class="menu-num">0${i + 1}</span><span class="menu-label">${l.label}</span><span class="menu-note">${l.note}</span>
+      </a>
+      ${l.subs ? `<div class="menu-subs">${l.subs.map(([h, t]) => `<a href="${h}" onclick="closeMenu()">${t}</a>`).join('')}</div>` : ''}
+    </li>`).join('');
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="site-menu" id="siteMenu" role="dialog" aria-modal="true" aria-label="Site menu" aria-hidden="true">
+      <div class="site-menu-bg" aria-hidden="true">BAM.SZN</div>
+      <div class="site-menu-inner">
+        <div class="site-menu-top">
+          <div class="bag-eyebrow">Menu</div>
+          <button class="modal-close" onclick="closeMenu()" aria-label="Close menu">✕</button>
+        </div>
+        <ul class="menu-list">${items}</ul>
+        <div class="site-menu-foot">
+          <a href="mailto:sznbams@gmail.com">sznbams@gmail.com</a>
+          <a href="https://www.instagram.com/noofszn?stkn=MXJ6dm44dGR1eDhr&utm_source=qr" target="_blank" rel="noopener">Instagram @bam.szn</a>
+          <a href="#" onclick="closeMenu();openBag();return false;">Your Bag</a>
+          <span>No Off Szn · NAIJA 🇳🇬</span>
+        </div>
+      </div>
+    </div>`);
+}
+
+function menuIsOpen() { return document.body.classList.contains('menu-open'); }
+function openMenu() {
+  const m = document.getElementById('siteMenu'); if (!m) return;
+  document.body.classList.add('menu-open');
+  document.body.style.overflow = 'hidden';
+  m.setAttribute('aria-hidden', 'false');
+  const b = document.getElementById('menuBtn');
+  if (b) { b.setAttribute('aria-expanded', 'true'); b.setAttribute('aria-label', 'Close menu'); }
+  const first = m.querySelector('.menu-link'); if (first) setTimeout(() => first.focus({ preventScroll: true }), 50);
+}
+function closeMenu() {
+  if (!menuIsOpen()) return;
+  document.body.classList.remove('menu-open');
+  const mb = document.getElementById('modalBackdrop');
+  if (!bagIsOpen() && !(mb && mb.classList.contains('open'))) document.body.style.overflow = '';
+  const m = document.getElementById('siteMenu'); if (m) m.setAttribute('aria-hidden', 'true');
+  const b = document.getElementById('menuBtn');
+  if (b) { b.setAttribute('aria-expanded', 'false'); b.setAttribute('aria-label', 'Open menu'); }
+}
+function toggleMenu() { menuIsOpen() ? closeMenu() : openMenu(); }
+
+// Old homepage links (e.g. /#contact) now live on their own pages
+(function redirectOldAnchors() {
+  if (currentPath() !== '/') return;
+  const map = { '#brand': '/about#philosophy', '#policies': '/shipping-returns', '#contact': '/contact', '#shop': '/shop' };
+  if (map[window.location.hash]) window.location.replace(map[window.location.hash]);
+})();
+
+document.addEventListener('keydown', e => { if (e.key==='Escape') { closeMenu(); closeModalDirect(); closeBag(); } });
 if (document.getElementById('productsGrid')) renderProducts();
 mountBag();
+mountMenu();
