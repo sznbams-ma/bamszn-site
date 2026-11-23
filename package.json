@@ -1,0 +1,8 @@
+{
+  "name": "bamszn-site",
+  "private": true,
+  "type": "commonjs",
+  "dependencies": {
+    "@netlify/database": "^2.0.3"
+  }
+}
