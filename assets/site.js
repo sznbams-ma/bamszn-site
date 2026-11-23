@@ -225,9 +225,9 @@ const products = [
   {
     id:6, category:'set', badge:'SOON',
     name:'Bamszn After hours ', edition:'Matching Set — Red',
-    price:'$28.92', ngn:'₦40,000', amountNGN:40000, payLink:'',
+    price:'$28.92', ngn:'₦100', amountNGN:100, payLink:'',
     desc:'The full Bams experience. Cute, confident and made to move. A little sweet, a little bold, always in your own szn. An entire vibe — co-ord ready.',
-    sizes:['S','M','L','XL'], oos:[], available:false,
+    sizes:['S','M','L','XL'], oos:[], available:true,
     material:'100% waffle cotton — Co-ord Set', fit:'Matching / Relaxed',
     imgSrc:'https://i.postimg.cc/7YsbWDxv/freepik-bamsszn-project-20260918151747g4TM-removebg-preview.png',
     imgSrc2:'', swatch:'#C00000'
@@ -247,7 +247,7 @@ const products = [
 // Flat shipping fee added at checkout (Naira) — only applied once a delivery address is entered
 // Shipping fee per Nigerian state (delivery destination) — replaces the old flat fee
 const SHIPPING_RATES = [
-  { state: 'Abuja (FCT)', fee: 5000 },
+  { state: 'Abuja (FCT)', fee: 50 },
   { state: 'Adamawa — Yola', fee: 5000 },
   { state: 'Akwa Ibom — Uyo', fee: 6000 },
   { state: 'Anambra — Awka', fee: 6000 },
